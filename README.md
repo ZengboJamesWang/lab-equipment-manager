@@ -194,7 +194,7 @@ A comprehensive full-stack web application designed for managing laboratory equi
    # Or using npm (all platforms)
    npm start
    ```
-   Access at: http://localhost:4173
+   Access at: http://localhost:5000
 
    **Development Mode (for testing):**
    ```bash
@@ -323,8 +323,8 @@ scripts\start.bat
 npm start
 ```
 
-- Backend: http://localhost:5000
-- Frontend: http://localhost:4173
+- Access at: http://localhost:5000
+  (Backend serves both API and frontend static files)
 
 **Development Mode:**
 
@@ -344,7 +344,7 @@ npm run dev
 - Backend: http://localhost:5000
 - Frontend: http://localhost:3000
 
-**Note:** Both modes start backend and frontend servers together. Press `Ctrl+C` to stop both.
+**Note:** Development mode starts both backend and frontend servers. Production mode runs a single server that serves everything. Press `Ctrl+C` to stop.
 
 **Make scripts executable (Linux/macOS only):**
 ```bash
