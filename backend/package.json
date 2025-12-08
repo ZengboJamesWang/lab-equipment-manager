@@ -10,7 +10,10 @@
     "db:migrate": "node dist/utils/migrate.js",
     "db:migrate-004": "ts-node src/config/run-migration-004.ts",
     "db:update-schema": "ts-node src/utils/update-schema.ts",
-    "db:reset-users": "ts-node src/utils/reset-users.ts"
+    "db:reset-users": "ts-node src/utils/reset-users.ts",
+    "db:export": "ts-node src/scripts/export-data.ts",
+    "db:export-sql": "ts-node src/scripts/export-sql.ts",
+    "db:import": "ts-node src/scripts/import-data.ts"
   },
   "keywords": [
     "lab",

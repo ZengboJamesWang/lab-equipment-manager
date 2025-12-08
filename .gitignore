@@ -22,6 +22,10 @@ build/
 backend/uploads/*
 !backend/uploads/.gitkeep
 
+# Database exports (contain user data)
+backend/exports/*
+!backend/exports/.gitkeep
+
 # IDE
 .vscode/
 .idea/

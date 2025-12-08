@@ -1009,6 +1009,10 @@ systemctl status nginx
 systemctl status postgresql
 ```
 
+**Database Export and Import:**
+
+For migrating data between systems or creating backups in portable JSON format, see the [Database Export/Import Guide](backend/EXPORT-IMPORT-GUIDE.md).
+
 **Update the application:**
 
 ```bash
