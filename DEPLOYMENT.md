@@ -6,6 +6,19 @@ This guide provides a quick reference for deploying LabManager to a production s
 
 ---
 
+## 📑 Table of Contents
+- [Pre-Deployment Checklist](#-pre-deployment-checklist)
+- [Quick Deployment Steps](#-quick-deployment-steps)
+- [Common Configuration Changes](#-common-configuration-changes)
+- [Monitoring Commands](#-monitoring-commands)
+- [Update Application](#-update-application)
+- [Security Checklist](#-security-checklist)
+- [Troubleshooting](#-troubleshooting)
+- [Migration Troubleshooting](#-migration-troubleshooting)
+- [Daily Backup Script](#-daily-backup-script)
+
+---
+
 ## 📋 Pre-Deployment Checklist
 
 - [ ] Linux server (Ubuntu 20.04+ recommended) with root/sudo access
@@ -305,6 +318,40 @@ pm2 restart labmanager
 - [ ] Database user has limited privileges
 - [ ] Regular backups configured
 - [ ] Server kept up-to-date (`sudo apt update && sudo apt upgrade`)
+
+---
+
+## 🔧 Migration Troubleshooting
+
+**Check migration status:**
+```bash
+sudo -u postgres psql -d lab_manager -c "SELECT version, filename, applied_at FROM schema_migrations ORDER BY version;"
+```
+
+**Expected output:**
+```
+ version |                        filename                         |         applied_at
+---------+---------------------------------------------------------+----------------------------
+ 001     | 001_add_site_settings_and_equipment_features.sql       | 2025-12-09 17:30:15.123456
+ 002     | 002_add_equipment_requires_approval.sql                | 2025-12-09 17:30:15.456789
+ 003     | 003_update_booking_status_constraint.sql               | 2025-12-09 17:30:15.789012
+ 004     | 004_add_documents_table.sql                            | 2025-12-09 17:30:16.012345
+ 005     | 005_add_document_categories.sql                        | 2025-12-09 17:30:16.234567
+ 006     | 006_fix_documents_schema.sql                           | 2025-12-09 17:30:16.456789
+```
+
+**Columns missing after deployment:**
+- Ensure you ran `npm run db:migrate` AFTER `git pull` and `npm run build`
+- Check which migrations have been applied with command above
+- If migrations are missing, run `npm run db:migrate` again
+
+**"Cannot find module" error during migration:**
+- Ensure you ran `npm run build` before `npm run db:migrate`
+- TypeScript code must be compiled to dist/ folder first
+
+**Migration fails with permission error:**
+- Check database user has proper permissions
+- Run: `sudo -u postgres psql -d lab_manager -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO lab_admin;"`
 
 ---
 

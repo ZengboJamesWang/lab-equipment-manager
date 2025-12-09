@@ -26,81 +26,43 @@ A comprehensive full-stack web application designed for managing laboratory equi
 
 ## 🚀 Features
 
-### Equipment Management
-- ✅ Complete CRUD operations for equipment inventory
-- ✅ Multiple equipment categories with customizable colors
-- ✅ Detailed metadata tracking (name, model, serial number, location, purchase info)
-- ✅ Equipment status tracking (active, under maintenance, reserved, decommissioned)
-- ✅ **Multi-image upload** support (local files or URLs, max 5MB)
-- ✅ **Primary image selection** for equipment cards
-- ✅ **Technical specifications** management with custom key-value pairs
-- ✅ Operating notes and manuals
-- ✅ Advanced search and filtering
-- ✅ Equipment calendar availability view
+### Core Functionality
+- ✅ Complete equipment inventory management with categories and metadata
+- ✅ Multi-image upload with primary image selection
+- ✅ Custom technical specifications per equipment
+- ✅ Advanced search, filtering, and calendar views
+- ✅ Equipment status tracking and availability management
 
-### Booking & Reservation System
-- ✅ Intuitive booking interface with calendar visualization
-- ✅ **Equipment approval workflow** - configurable per equipment
-- ✅ **Visual status indicators**:
-  - Pending bookings (yellow background with ⏳)
-  - Confirmed bookings (green background)
-  - Cancelled bookings (filtered from display)
-- ✅ **Smart conflict detection** (includes pending and confirmed bookings)
-- ✅ **Sortable booking table** - sort by equipment, user, time, or status
-- ✅ Booking request submission and management
-- ✅ Admin approval/rejection controls with notes
-- ✅ Email and purpose tracking
-- ✅ Edit and cancel bookings
-- ✅ Personal booking history with filtering options
+### Booking System
+- ✅ Calendar-based booking interface with visual status indicators
+- ✅ Configurable approval workflow per equipment
+- ✅ Smart conflict detection and resolution
+- ✅ Sortable booking table with filtering
+- ✅ Admin approval controls and booking management
 
-### Document Management
-- ✅ **Document upload and storage** (PDF, DOC, DOCX, XLS, XLSX, TXT)
-- ✅ **Document categories** with color coding
-- ✅ **Description and metadata** tracking
-- ✅ Document viewing, downloading, and link sharing
-- ✅ **Category-based filtering** and organization
-- ✅ **Sortable columns** (name, category, size, date, uploader)
-- ✅ **Pagination** for large document collections
-- ✅ Admin controls for document and category management
+### Documents & Media
+- ✅ Document upload and categorization (PDF, DOC, XLS, TXT)
+- ✅ Color-coded categories with metadata
+- ✅ Sortable columns and pagination
+- ✅ File viewing, downloading, and link sharing
 
-### User Management
-- ✅ JWT-based secure authentication
-- ✅ Role-based access control (Admin/User)
-- ✅ User registration with approval workflow
-- ✅ **Password change functionality** for all users
-- ✅ User profile management
-- ✅ Department and contact information tracking
-- ✅ User activation/deactivation (admin)
-- ✅ Role promotion/demotion (admin)
+### User & Access Management
+- ✅ JWT authentication with role-based access control
+- ✅ User registration with admin approval workflow
+- ✅ Password management and profile editing
+- ✅ Department tracking and user activation controls
 
-### Maintenance Tracking
-- ✅ Comprehensive maintenance history logging
-- ✅ Maintenance types (routine, repair, calibration, inspection)
-- ✅ Cost tracking and budgeting
-- ✅ Next maintenance scheduling
-- ✅ Maintenance records per equipment
-- ✅ Technician and notes tracking
+### Maintenance & Issues
+- ✅ Maintenance history logging with cost tracking
+- ✅ Scheduled maintenance and reminders
+- ✅ Issue reporting with severity levels
+- ✅ Resolution tracking and admin controls
 
-### Issue Reporting & Remarks
-- ✅ Equipment issue and damage reporting
-- ✅ Severity levels (low, medium, high, critical)
-- ✅ Issue tracking and resolution workflow
-- ✅ Admin controls for issue resolution
-- ✅ Comment and follow-up system
-
-### Site Configuration
-- ✅ **Customizable site name** (admin configurable)
-- ✅ Dynamic branding throughout application
-- ✅ Settings management interface
-- ✅ Extensible configuration system
-
-### Database Management & Migration
-- ✅ **Complete database export** - exports entire database to ZIP archive
-- ✅ **File bundling** - includes uploaded documents and images
-- ✅ **One-command import** - restores database and files together
-- ✅ **Backward compatible** - supports legacy JSON exports
-- ✅ **Orphaned data cleanup** - utility to remove invalid references
-- ✅ **Portable backups** - ZIP format for easy transfer between servers
+### Site Administration
+- ✅ Customizable site branding and settings
+- ✅ Complete database export/import with files (ZIP format)
+- ✅ Orphaned data cleanup utilities
+- ✅ Migration system with version tracking
 
 ---
 
@@ -159,67 +121,38 @@ A comprehensive full-stack web application designed for managing laboratory equi
 
 ## ⚡ Quick Start
 
-### For Windows Users
+**Prerequisites:** Node.js 18+, PostgreSQL 14+
 
-1. **Ensure PostgreSQL is running:**
-   ```bash
-   # Open PowerShell or Command Prompt
-   psql -U postgres
-   CREATE DATABASE lab_manager;
-   \q
-   ```
+```bash
+# 1. Create database
+psql -U postgres
+CREATE DATABASE lab_manager;
+\q
 
-2. **Clone or extract the project:**
-   ```bash
-   cd C:\path\to\LabManager
-   ```
+# 2. Setup backend
+cd backend
+cp .env.example .env  # Edit with database credentials & JWT secret
+npm install
+npm run build
+npm run db:migrate
 
-3. **Configure environment:**
-   ```bash
-   cd backend
-   copy .env.example .env
-   # Edit .env with your database credentials and JWT secret
-   ```
+# 3. Setup frontend
+cd ../frontend
+npm install
+npm run build
 
-4. **Install and setup:**
-   ```bash
-   cd backend
-   npm install
-   npm run build
-   npm run db:migrate
+# 4. Start application
+npm start  # Production mode (http://localhost:5000)
+# OR
+npm run dev  # Development mode (http://localhost:3000)
 
-   cd ..\frontend
-   npm install
-   npm run build
-   ```
+# 5. Login
+# Email: admin@lab.com
+# Password: admin123
+# ⚠️ Change password immediately after first login!
+```
 
-5. **Start the application:**
-
-   **Production Mode (recommended):**
-   ```bash
-   # Windows
-   scripts\start.bat
-
-   # Or using npm (all platforms)
-   npm start
-   ```
-   Access at: http://localhost:5000
-
-   **Development Mode (for testing):**
-   ```bash
-   # Windows
-   scripts\start-dev.bat
-
-   # Or using npm (all platforms)
-   npm run dev
-   ```
-   Access at: http://localhost:3000
-
-6. **Login and setup:**
-   - Open browser and navigate to the URL shown above
-   - Login with: `admin@lab.com` / `admin123`
-   - **Change password immediately!**
-   - Configure site settings and add equipment
+**Windows:** Use `copy` instead of `cp`, and `scripts\start.bat` or `scripts\start-dev.bat`
 
 ---
 
@@ -598,666 +531,41 @@ For full API documentation, see inline comments in route files.
 
 ## 🌐 Deployment
 
-> **Quick Start:** For a condensed step-by-step deployment checklist, see [DEPLOYMENT.md](DEPLOYMENT.md)
+> **📋 For complete deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
 ### Deployment Overview
 
-LabManager uses a **single-server architecture** where the backend serves both the API and the built frontend files. This simplifies deployment as you only need to run one Node.js process.
-
-### Pre-Deployment Checklist
-
-Before deploying to your domain (e.g., `mydomain.com`), ensure you have:
-
-- ✅ A server with Node.js 18+ and PostgreSQL 14+ installed
-- ✅ A domain name pointing to your server's IP address
-- ✅ SSL/TLS certificate (Let's Encrypt recommended)
-- ✅ Firewall configured (ports 80, 443 open; port 5432 restricted)
-- ✅ Sufficient storage for uploads and documents (20GB+ recommended)
-
----
-
-### Production Deployment Steps
-
-#### 1. Server Preparation
-
-```bash
-# Update system packages (Ubuntu/Debian)
-sudo apt update && sudo apt upgrade -y
-
-# Install Node.js 18+ (using NodeSource)
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt install -y nodejs
-
-# Install PostgreSQL
-sudo apt install -y postgresql postgresql-contrib
-
-# Install process manager (PM2)
-sudo npm install -g pm2
-```
-
-#### 2. Database Setup for Production
-
-```bash
-# Switch to postgres user
-sudo -u postgres psql
-
-# Create production database and user
-CREATE DATABASE lab_manager;
-CREATE USER lab_admin WITH ENCRYPTED PASSWORD 'STRONG_SECURE_PASSWORD_HERE';
-GRANT ALL PRIVILEGES ON DATABASE lab_manager TO lab_admin;
-\q
-```
-
-**Security Note:** Use a strong, unique password for the database user.
-
-#### 3. Application Setup
-
-```bash
-# Create application directory
-sudo mkdir -p /var/www/labmanager
-sudo chown -R $USER:$USER /var/www/labmanager
-cd /var/www/labmanager
-
-# Upload or clone your application files here
-# (Use git clone, scp, or other transfer method)
-
-# Set proper permissions
-chmod -R 755 /var/www/labmanager
-```
-
-#### 4. Backend Configuration for Production
-
-```bash
-cd /var/www/labmanager/backend
-
-# Create production .env file
-nano .env
-```
-
-**Production `.env` configuration:**
-
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=production
-
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=lab_manager
-DB_USER=lab_admin
-DB_PASSWORD=YOUR_STRONG_DATABASE_PASSWORD
-
-# JWT Configuration (CRITICAL: Generate a new secret)
-JWT_SECRET=GENERATE_A_VERY_LONG_RANDOM_STRING_HERE_64_PLUS_CHARACTERS
-JWT_EXPIRES_IN=7d
-
-# CORS Configuration
-# Option 1: Specific domain (recommended for security)
-CORS_ORIGIN=https://yourdomain.com
-
-# Option 2: Multiple domains (comma-separated, if needed)
-# CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
-
-# Option 3: Allow all origins (NOT recommended for production)
-# CORS_ORIGIN=*
-```
-
-**Generate secure JWT secret:**
-
-```bash
-# Linux/macOS:
-openssl rand -base64 64
-
-# Or use Node.js:
-node -e "console.log(require('crypto').randomBytes(64).toString('base64'))"
-```
-
-#### 5. Frontend Configuration for Production
-
-```bash
-cd /var/www/labmanager/frontend
-
-# Create production .env file (optional - usually not needed)
-nano .env
-```
-
-**Frontend `.env` (optional):**
-
-```env
-# API URL - Leave as /api to use same-origin requests
-VITE_API_URL=/api
-
-# Site Name (optional, can be configured in app settings)
-VITE_SITE_NAME=My Laboratory
-```
-
-**Note:** For production, the frontend uses `/api` which proxies to the backend running on the same server.
-
-#### 6. Build and Deploy
-
-```bash
-# Install and build backend
-cd /var/www/labmanager/backend
-npm install --production
-npm run build
-
-# Run database migrations
-npm run db:migrate
-
-# Expected output for first deployment:
-# 🚀 Starting database migration...
-# 📦 Running base schema...
-# ✅ Base schema created successfully
-# ✅ Migration tracking table ready
-# 📋 Found 6 pending migration(s):
-#    - 001_add_site_settings_and_equipment_features.sql
-#    - 002_add_equipment_requires_approval.sql
-#    - 003_update_booking_status_constraint.sql
-#    - 004_add_documents_table.sql
-#    - 005_add_document_categories.sql
-#    - 006_fix_documents_schema.sql
-# 🔄 Running migration: 001_add_site_settings_and_equipment_features.sql
-#    ✅ Migration 001_add_site_settings_and_equipment_features.sql completed
-# ... (continues for all migrations)
-# ✅ Database migration completed successfully!
-# 📊 Migrations applied: 6
-# 📊 Total migrations: 6
-
-# On subsequent deployments (after git pull):
-# npm run db:migrate will only run NEW migrations
-# If no new migrations: "✅ All migrations are up to date!"
-
-# Create uploads directory with proper permissions
-mkdir -p uploads
-chmod 755 uploads
-
-# Install and build frontend
-cd /var/www/labmanager/frontend
-npm install
-npm run build
-
-# Verify build was successful
-ls -la dist/
-```
-
-#### 7. Start Application with PM2
-
-```bash
-# Navigate to backend directory
-cd /var/www/labmanager/backend
-
-# Start the application
-pm2 start dist/server.js --name "labmanager" --env production
-
-# Save PM2 configuration
-pm2 save
-
-# Configure PM2 to start on system boot
-pm2 startup
-# (Follow the command it outputs - you may need to run with sudo)
-
-# Monitor application logs
-pm2 logs labmanager
-
-# Check application status
-pm2 status
-```
-
-**PM2 Management Commands:**
-
-```bash
-pm2 restart labmanager    # Restart application
-pm2 stop labmanager       # Stop application
-pm2 delete labmanager     # Remove from PM2
-pm2 logs labmanager       # View logs
-pm2 monit                 # Monitor resources
-```
-
-#### 8. Configure Reverse Proxy with Nginx
-
-**Install Nginx:**
-
-```bash
-sudo apt install -y nginx
-```
-
-**Create Nginx configuration:**
-
-```bash
-sudo nano /etc/nginx/sites-available/labmanager
-```
-
-**Step 1: Temporary HTTP-only configuration (for obtaining SSL certificate):**
-
-```nginx
-# Temporary HTTP-only configuration
-server {
-    listen 80;
-    listen [::]:80;
-    server_name yourdomain.com;  # Replace with your actual domain
-
-    # Let's Encrypt verification
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    # Proxy to Node.js backend temporarily
-    location / {
-        proxy_pass http://localhost:5000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    location /uploads/ {
-        alias /var/www/labmanager/backend/uploads/;
-    }
-}
-```
-
-**Important:** Replace `yourdomain.com` with your actual domain.
-
-**Prepare and test this configuration:**
-
-```bash
-# Create certbot directory
-sudo mkdir -p /var/www/certbot
-
-# Test Nginx configuration
-sudo nginx -t
-
-# If test passes, reload Nginx
-sudo systemctl reload nginx
-```
-
-**Enable the site:**
-
-```bash
-# Create symbolic link (if not already done)
-sudo ln -s /etc/nginx/sites-available/labmanager /etc/nginx/sites-enabled/
-
-# Test Nginx configuration
-sudo nginx -t
-
-# Reload Nginx
-sudo systemctl reload nginx
-```
-
-#### 9. Obtain SSL/TLS Certificate with Let's Encrypt
-
-```bash
-# Install Certbot (if not already installed)
-sudo apt install -y certbot python3-certbot-nginx
-
-# Obtain certificate (replace yourdomain.com with your actual domain)
-sudo certbot --nginx -d yourdomain.com
-
-# For www subdomain support (optional):
-# sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
-
-# Test automatic renewal
-sudo certbot renew --dry-run
-```
-
-**Important Notes:**
-- Replace `yourdomain.com` with your actual domain
-- Follow the Certbot prompts to enter your email and agree to terms
-- Choose whether to redirect HTTP to HTTPS (recommended: Yes)
-- Certbot will automatically obtain and configure SSL certificates
-
-#### 10. Update to Full HTTPS Configuration
-
-After obtaining the SSL certificate, update your Nginx configuration:
-
-```bash
-sudo nano /etc/nginx/sites-available/labmanager
-```
-
-**Step 2: Full production configuration with HTTPS redirect:**
-
-```nginx
-# Redirect HTTP to HTTPS
-server {
-    listen 80;
-    listen [::]:80;
-    server_name yourdomain.com;  # Replace with your actual domain
-
-    # Let's Encrypt verification
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    # Redirect all other traffic to HTTPS
-    location / {
-        return 301 https://$server_name$request_uri;
-    }
-}
-
-# HTTPS Server
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name yourdomain.com;  # Replace with your actual domain
-
-    # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-
-    # SSL Security Settings
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
-    ssl_session_cache shared:SSL:10m;
-
-    # Security Headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-
-    # Max upload size
-    client_max_body_size 10M;
-
-    # Proxy to Node.js backend
-    location / {
-        proxy_pass http://localhost:5000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # Serve uploads directly
-    location /uploads/ {
-        alias /var/www/labmanager/backend/uploads/;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Logging
-    access_log /var/log/nginx/labmanager_access.log;
-    error_log /var/log/nginx/labmanager_error.log;
-}
-```
-
-**Important:** Replace all instances of `yourdomain.com` with your actual domain.
-
-**Test and reload Nginx:**
-
-```bash
-# Test configuration
-sudo nginx -t
-
-# Reload Nginx
-sudo systemctl reload nginx
-```
-
-**Update backend CORS configuration:**
-
-```bash
-sudo nano /var/www/labmanager/backend/.env
-```
-
-Update CORS_ORIGIN:
-```env
-CORS_ORIGIN=https://yourdomain.com
-```
-
-Restart the application:
-```bash
-pm2 restart labmanager
-```
-
-**Verify deployment:**
-- Visit `https://yourdomain.com` - should work with HTTPS
-- Visit `http://yourdomain.com` - should redirect to HTTPS
-- Check for SSL padlock in browser
-
-#### 11. Configure Firewall
-
-```bash
-# Allow SSH, HTTP, and HTTPS
-sudo ufw allow OpenSSH
-sudo ufw allow 'Nginx Full'
-
-# Enable firewall
-sudo ufw enable
-
-# Check firewall status
-sudo ufw status
-```
-
-#### 12. Post-Deployment Verification
-
-**Test the deployment:**
-
-1. **Access your site:** `https://yourdomain.com`
-2. **Login with default credentials:**
-   - Email: `admin@lab.com`
-   - Password: `admin123`
-3. **IMMEDIATELY change the admin password** in Settings > Change Password
-4. **Configure site settings:** Settings > Site Name
-5. **Test all features:**
-   - Equipment management
-   - Bookings
-   - Document uploads
-   - User registration/approval
-
-**Check application logs:**
-
-```bash
-# PM2 logs
-pm2 logs labmanager
-
-# Nginx logs
-sudo tail -f /var/log/nginx/labmanager_access.log
-sudo tail -f /var/log/nginx/labmanager_error.log
-```
-
----
-
-### Alternative: Direct Deployment (Without Nginx)
-
-If you prefer to run the application directly without a reverse proxy:
-
-```bash
-# Update backend .env
-PORT=80          # For HTTP (requires sudo/root)
-# or
-PORT=443         # For HTTPS (requires SSL certificates in Node.js)
-
-# Update CORS_ORIGIN
-CORS_ORIGIN=https://yourdomain.com
-
-# Run with PM2 as root (for ports < 1024)
-sudo pm2 start dist/server.js --name "labmanager"
-```
-
-**Note:** Using Nginx as a reverse proxy is **strongly recommended** for:
-- SSL/TLS termination
-- Static file caching
-- Better security
-- Load balancing (future scaling)
-- Easier certificate management
-
----
-
-### Environment-Specific Configurations
-
-#### Development
-- `NODE_ENV=development`
-- `CORS_ORIGIN=http://localhost:3000`
-- Hot reload enabled
-- Detailed error logging
-
-#### Production
-- `NODE_ENV=production`
-- `CORS_ORIGIN=https://yourdomain.com`
-- Optimized builds
-- Error logging to files
+LabManager uses a single-server architecture where the backend serves both the API and built frontend files.
+
+**Quick Steps:**
+1. Set up Linux server with Node.js 18+ and PostgreSQL 14+
+2. Configure database and environment variables
+3. Build and deploy application
+4. Configure Nginx reverse proxy with SSL
+5. Start with PM2 process manager
+
+**Production Checklist:**
+- ✅ Server with Node.js 18+, PostgreSQL 14+, Nginx
+- ✅ Domain name pointing to server IP
+- ✅ SSL certificate (Let's Encrypt)
+- ✅ Firewall configured (ports 80, 443 open)
+- ✅ Strong passwords for database and JWT secret
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for:**
+- Step-by-step deployment guide
+- Nginx configuration examples
+- SSL certificate setup
 - PM2 process management
+- Troubleshooting deployment issues
+- Backup and update procedures
 
----
-
-### Backup Strategy
-
-**Built-in Export Utility (Recommended):**
-
+**Quick Deploy Commands:**
 ```bash
-# Use the built-in export for complete backups
-cd /var/www/labmanager/backend
-npm run db:export
-
-# Copy to backup location
-cp exports/lab-manager-backup-*.zip /var/backups/labmanager/
-```
-
-This creates a complete portable backup including all database tables and uploaded files in a single ZIP archive.
-
-**Manual Backup Script (Alternative):**
-
-```bash
-# Create backup script
-nano /var/www/labmanager/scripts/backup-db.sh
-```
-
-```bash
-#!/bin/bash
-BACKUP_DIR="/var/backups/labmanager"
-DATE=$(date +%Y%m%d_%H%M%S)
-
-mkdir -p $BACKUP_DIR
-
-# Backup database
-pg_dump -U lab_admin -h localhost lab_manager > "$BACKUP_DIR/lab_manager_$DATE.sql"
-
-# Backup uploads directory
-tar -czf "$BACKUP_DIR/uploads_$DATE.tar.gz" /var/www/labmanager/backend/uploads/
-
-# Keep only last 7 days of backups
-find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
-find $BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
-
-echo "Backup completed: $DATE"
-```
-
-```bash
-# Make executable
-chmod +x /var/www/labmanager/scripts/backup-db.sh
-
-# Add to crontab (daily at 2 AM)
-crontab -e
-# Add line:
-# 0 2 * * * /var/www/labmanager/scripts/backup-db.sh >> /var/log/labmanager-backup.log 2>&1
-```
-
----
-
-### Monitoring and Maintenance
-
-**Monitor application:**
-
-```bash
-# System resources
-pm2 monit
-
-# Application logs
-pm2 logs labmanager --lines 100
-
-# System health
-systemctl status nginx
-systemctl status postgresql
-```
-
-**Check migration status:**
-
-```bash
-# View all applied migrations
-sudo -u postgres psql -d lab_manager -c "SELECT version, filename, applied_at FROM schema_migrations ORDER BY version;"
-
-# Sample output:
-#  version |                        filename                         |         applied_at
-# ---------+---------------------------------------------------------+----------------------------
-#  001     | 001_add_site_settings_and_equipment_features.sql       | 2025-12-09 17:30:15.123456
-#  002     | 002_add_equipment_requires_approval.sql                | 2025-12-09 17:30:15.456789
-#  003     | 003_update_booking_status_constraint.sql               | 2025-12-09 17:30:15.789012
-#  004     | 004_add_documents_table.sql                            | 2025-12-09 17:30:16.012345
-#  005     | 005_add_document_categories.sql                        | 2025-12-09 17:30:16.234567
-#  006     | 006_fix_documents_schema.sql                           | 2025-12-09 17:30:16.456789
-```
-
-**Database Export and Import:**
-
-LabManager includes built-in export/import utilities for complete system migration:
-
-```bash
-# Export everything (database + files)
-cd backend
-npm run db:export
-# Creates: exports/lab-manager-backup-YYYY-MM-DD.zip
-
-# Import on another server
-npm run db:import -- exports/lab-manager-backup-YYYY-MM-DD.zip
-```
-
-**What's Included in Export:**
-- Complete database (users, equipment, bookings, documents, maintenance, settings, etc.)
-- Equipment images and specifications
-- Document files (PDFs, Excel, Word, etc.)
-- Site settings and configurations
-- Equipment and document categories
-
-**Export Format:**
-```
-lab-manager-backup-YYYY-MM-DD.zip
-├── manifest.json              # Export metadata
-├── database/
-│   └── data.json             # All database tables
-└── files/
-    ├── uploads/              # Equipment images
-    └── uploads/documents/    # Document files
-```
-
-**Legacy Format Support:**
-The import utility automatically detects and supports legacy JSON-only exports for backward compatibility.
-
-**Update the application:**
-
-```bash
-# Stop application
-pm2 stop labmanager
-
-# Backup database first!
-pg_dump -U lab_admin lab_manager > backup_before_update.sql
-
-# Pull updates (if using git)
+# See DEPLOYMENT.md for prerequisites and detailed steps
 cd /var/www/labmanager
 git pull
-
-# Rebuild backend
-cd backend
-npm install --production
-npm run build
-
-# Run migrations if any
-npm run db:migrate
-
-# Rebuild frontend
-cd ../frontend
-npm install
-npm run build
-
-# Restart application
+cd backend && npm install --production && npm run build && npm run db:migrate
+cd ../frontend && npm install && npm run build
 pm2 restart labmanager
 ```
 
@@ -1292,76 +600,30 @@ pm2 restart labmanager
 
 ## 🔧 Troubleshooting
 
-### Common Issues
-
-**Backend won't start:**
-- Check PostgreSQL is running: `sudo systemctl status postgresql`
-- Verify database credentials in `.env`
-- Ensure port 5000 is available: `netstat -an | grep 5000`
-- Check logs for error messages
-
-**Frontend shows blank page:**
-- Clear browser cache (Ctrl+Shift+R or Cmd+Shift+R)
-- Check browser console for errors (F12)
-- Verify `VITE_API_URL` in `.env`
-- Ensure backend is running
-
-**Can't upload files:**
-- Verify `uploads/` directory exists in backend
-- Check directory permissions: `chmod 755 backend/uploads`
-- Verify file size is under 5MB
-- Check file format is supported
-
-**Database connection errors:**
-- Test connection: `psql -U lab_admin -d lab_manager -h localhost`
-- Check PostgreSQL is accepting connections
-- Verify firewall rules
-- Review PostgreSQL logs
+**Application Issues:**
+- Backend won't start: Check PostgreSQL status, verify `.env` credentials, ensure port 5000 is available
+- Frontend blank page: Clear cache (Ctrl+Shift+R), check console (F12), verify `VITE_API_URL`
+- File upload fails: Check `uploads/` directory exists, verify permissions (`chmod 755`), check file size < 5MB
+- Database errors: Test connection with `psql`, verify PostgreSQL is running, check firewall rules
 
 **Migration Issues:**
-
-**Migration fails with "relation already exists":**
-- The migration system is idempotent and handles existing tables
-- Check if migration tracking table exists:
-  `sudo -u postgres psql -d lab_manager -c "SELECT * FROM schema_migrations;"`
-- If table doesn't exist, the migration system will create it automatically
-
-**Columns missing after deployment:**
-- Ensure you ran `npm run db:migrate` AFTER `git pull` and `npm run build`
-- Check which migrations have been applied:
-  `sudo -u postgres psql -d lab_manager -c "SELECT * FROM schema_migrations ORDER BY version;"`
-- If migrations are missing, run `npm run db:migrate` again
-
-**"Cannot find module" error during migration:**
-- Ensure you ran `npm run build` before `npm run db:migrate`
-- The TypeScript code must be compiled to dist/ folder first
-
-**Login fails after password change:**
-- Clear browser localStorage and cookies
-- Try incognito/private browsing mode
-- Verify password was changed successfully in database
+- **Migration fails**: System is idempotent and handles existing tables automatically
+- **Missing columns**: Run `npm run db:migrate` AFTER `git pull` and `npm run build`
+- **Check migration status:**
+  ```bash
+  sudo -u postgres psql -d lab_manager -c "SELECT * FROM schema_migrations ORDER BY version;"
+  ```
+- **Module not found**: Run `npm run build` before `npm run db:migrate` (TypeScript must be compiled)
 
 **Export/Import Issues:**
+- Export creates JSON: Ensure `archiver` dependency installed, check Node.js version 18+
+- Import fails: Verify file extension (`.zip` or `.json`), test file with `unzip -t backup.zip`
+- Files not restored: Check `uploads/` permissions, verify ZIP structure, check disk space
+- Orphaned records: Run `npm run db:cleanup-orphaned-images`
 
-**Export creates JSON instead of ZIP:**
-- Ensure `archiver` dependency is installed: `npm install`
-- Check for errors in export output
-- Verify Node.js version is 18+
-
-**Import fails with "unsupported format":**
-- Verify file extension is `.zip` or `.json`
-- Check file is not corrupted: `unzip -t backup.zip`
-- Ensure you're using the correct import command
-
-**Files not restored after import:**
-- Check `backend/uploads/` directory permissions: `chmod 755 uploads`
-- Verify ZIP contains `files/` directory: `unzip -l backup.zip`
-- Check disk space: `df -h`
-- Review import logs for file restoration errors
-
-**Orphaned image records after migration:**
-- Run cleanup utility: `npm run db:cleanup-orphaned-images`
-- This removes database records for missing files
+**Other Issues:**
+- Login fails after password change: Clear browser localStorage/cookies, try incognito mode
+- See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment-specific troubleshooting
 
 ---
 
@@ -1425,101 +687,35 @@ For technical support, bug reports, or feature requests:
 
 ```
 LabManager/
-├── backend/
+├── backend/                  # Node.js/Express backend
 │   ├── src/
-│   │   ├── config/
-│   │   │   ├── database.ts
-│   │   │   ├── schema.sql
-│   │   │   ├── migrations/
-│   │   │   │   ├── 001_add_site_settings_and_equipment_features.sql
-│   │   │   │   ├── 002_add_equipment_requires_approval.sql
-│   │   │   │   ├── 003_update_booking_status_constraint.sql
-│   │   │   │   ├── 004_add_documents_table.sql
-│   │   │   │   ├── 005_add_document_categories.sql
-│   │   │   │   └── 006_fix_documents_schema.sql
-│   │   │   └── run-migration.ts
-│   │   ├── controllers/
-│   │   │   ├── authController.ts
-│   │   │   ├── userController.ts
-│   │   │   ├── equipmentController.ts
-│   │   │   ├── bookingController.ts
-│   │   │   ├── categoryController.ts
-│   │   │   ├── documentController.ts
-│   │   │   ├── documentCategoryController.ts
-│   │   │   ├── maintenanceController.ts
-│   │   │   ├── remarkController.ts
-│   │   │   └── settingsController.ts
-│   │   ├── middleware/
-│   │   │   ├── auth.ts
-│   │   │   └── upload.ts
-│   │   ├── routes/
-│   │   │   ├── authRoutes.ts
-│   │   │   ├── userRoutes.ts
-│   │   │   ├── equipmentRoutes.ts
-│   │   │   ├── bookingRoutes.ts
-│   │   │   ├── categoryRoutes.ts
-│   │   │   ├── documentRoutes.ts
-│   │   │   ├── documentCategoryRoutes.ts
-│   │   │   ├── maintenanceRoutes.ts
-│   │   │   ├── remarkRoutes.ts
-│   │   │   └── settingsRoutes.ts
-│   │   ├── types/
-│   │   │   └── index.ts
-│   │   ├── utils/
-│   │   │   └── migrate.ts
-│   │   └── server.ts
-│   ├── uploads/              (Auto-created)
-│   ├── dist/                 (Built files)
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-├── frontend/
+│   │   ├── config/          # Database & migrations (schema.sql + 6 migration files)
+│   │   ├── controllers/     # Business logic (auth, equipment, bookings, etc.)
+│   │   ├── middleware/      # Auth & file upload middleware
+│   │   ├── routes/          # API endpoints
+│   │   ├── types/           # TypeScript interfaces
+│   │   ├── utils/           # Migration utilities
+│   │   ├── scripts/         # Export/import & cleanup scripts
+│   │   └── server.ts        # Entry point
+│   ├── uploads/             # User-uploaded files
+│   ├── dist/                # Compiled JavaScript
+│   └── package.json
+│
+├── frontend/                 # React/TypeScript frontend
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Layout.tsx
-│   │   │   └── EquipmentCalendar.tsx
-│   │   ├── contexts/
-│   │   │   └── AuthContext.tsx
-│   │   ├── pages/
-│   │   │   ├── Login.tsx
-│   │   │   ├── Register.tsx
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── Equipment.tsx
-│   │   │   ├── EquipmentDetails.tsx
-│   │   │   ├── Bookings.tsx
-│   │   │   ├── Categories.tsx
-│   │   │   ├── Documents.tsx
-│   │   │   ├── Maintenance.tsx
-│   │   │   ├── Remarks.tsx
-│   │   │   ├── Users.tsx
-│   │   │   ├── Settings.tsx
-│   │   │   └── Profile.tsx
-│   │   ├── services/
-│   │   │   └── api.ts
-│   │   ├── styles/
-│   │   │   └── index.css
-│   │   ├── types/
-│   │   │   └── index.ts
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── dist/                 (Built files)
-│   ├── index.html
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   └── .env.example
-├── scripts/                  (Startup scripts)
-│   ├── start.js             (Production - Node.js)
-│   ├── start-dev.js         (Development - Node.js)
-│   ├── start.bat            (Production - Windows)
-│   ├── start-dev.bat        (Development - Windows)
-│   ├── start.sh             (Production - Linux/macOS)
-│   └── start-dev.sh         (Development - Linux/macOS)
-├── .gitignore
-├── LICENSE
-├── README.md
-├── CONTRIBUTING.md
-└── package.json              (Root package for npm scripts)
+│   │   ├── components/      # Reusable UI components
+│   │   ├── contexts/        # React contexts (Auth)
+│   │   ├── pages/           # Main application pages
+│   │   ├── services/        # API client (axios)
+│   │   ├── styles/          # Global CSS
+│   │   └── App.tsx          # Root component
+│   ├── dist/                # Built static files
+│   └── package.json
+│
+├── scripts/                  # Cross-platform startup scripts
+├── README.md                 # This file
+├── DEPLOYMENT.md             # Deployment guide
+└── package.json              # Root scripts
 ```
 
 ---
