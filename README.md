@@ -745,6 +745,29 @@ npm run build
 # Run database migrations
 npm run db:migrate
 
+# Expected output for first deployment:
+# 🚀 Starting database migration...
+# 📦 Running base schema...
+# ✅ Base schema created successfully
+# ✅ Migration tracking table ready
+# 📋 Found 6 pending migration(s):
+#    - 001_add_site_settings_and_equipment_features.sql
+#    - 002_add_equipment_requires_approval.sql
+#    - 003_update_booking_status_constraint.sql
+#    - 004_add_documents_table.sql
+#    - 005_add_document_categories.sql
+#    - 006_fix_documents_schema.sql
+# 🔄 Running migration: 001_add_site_settings_and_equipment_features.sql
+#    ✅ Migration 001_add_site_settings_and_equipment_features.sql completed
+# ... (continues for all migrations)
+# ✅ Database migration completed successfully!
+# 📊 Migrations applied: 6
+# 📊 Total migrations: 6
+
+# On subsequent deployments (after git pull):
+# npm run db:migrate will only run NEW migrations
+# If no new migrations: "✅ All migrations are up to date!"
+
 # Create uploads directory with proper permissions
 mkdir -p uploads
 chmod 755 uploads
@@ -1156,6 +1179,23 @@ systemctl status nginx
 systemctl status postgresql
 ```
 
+**Check migration status:**
+
+```bash
+# View all applied migrations
+sudo -u postgres psql -d lab_manager -c "SELECT version, filename, applied_at FROM schema_migrations ORDER BY version;"
+
+# Sample output:
+#  version |                        filename                         |         applied_at
+# ---------+---------------------------------------------------------+----------------------------
+#  001     | 001_add_site_settings_and_equipment_features.sql       | 2025-12-09 17:30:15.123456
+#  002     | 002_add_equipment_requires_approval.sql                | 2025-12-09 17:30:15.456789
+#  003     | 003_update_booking_status_constraint.sql               | 2025-12-09 17:30:15.789012
+#  004     | 004_add_documents_table.sql                            | 2025-12-09 17:30:16.012345
+#  005     | 005_add_document_categories.sql                        | 2025-12-09 17:30:16.234567
+#  006     | 006_fix_documents_schema.sql                           | 2025-12-09 17:30:16.456789
+```
+
 **Database Export and Import:**
 
 LabManager includes built-in export/import utilities for complete system migration:
@@ -1277,6 +1317,24 @@ pm2 restart labmanager
 - Check PostgreSQL is accepting connections
 - Verify firewall rules
 - Review PostgreSQL logs
+
+**Migration Issues:**
+
+**Migration fails with "relation already exists":**
+- The migration system is idempotent and handles existing tables
+- Check if migration tracking table exists:
+  `sudo -u postgres psql -d lab_manager -c "SELECT * FROM schema_migrations;"`
+- If table doesn't exist, the migration system will create it automatically
+
+**Columns missing after deployment:**
+- Ensure you ran `npm run db:migrate` AFTER `git pull` and `npm run build`
+- Check which migrations have been applied:
+  `sudo -u postgres psql -d lab_manager -c "SELECT * FROM schema_migrations ORDER BY version;"`
+- If migrations are missing, run `npm run db:migrate` again
+
+**"Cannot find module" error during migration:**
+- Ensure you ran `npm run build` before `npm run db:migrate`
+- The TypeScript code must be compiled to dist/ folder first
 
 **Login fails after password change:**
 - Clear browser localStorage and cookies
