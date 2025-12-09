@@ -94,6 +94,14 @@ A comprehensive full-stack web application designed for managing laboratory equi
 - ✅ Settings management interface
 - ✅ Extensible configuration system
 
+### Database Management & Migration
+- ✅ **Complete database export** - exports entire database to ZIP archive
+- ✅ **File bundling** - includes uploaded documents and images
+- ✅ **One-command import** - restores database and files together
+- ✅ **Backward compatible** - supports legacy JSON exports
+- ✅ **Orphaned data cleanup** - utility to remove invalid references
+- ✅ **Portable backups** - ZIP format for easy transfer between servers
+
 ---
 
 ## 🛠 Technology Stack
@@ -108,6 +116,7 @@ A comprehensive full-stack web application designed for managing laboratory equi
 - **Security:** bcryptjs for password hashing
 - **File Upload:** Multer (5MB limit per file)
 - **CORS:** Configurable cross-origin resource sharing
+- **Backup & Migration:** archiver (ZIP creation), unzipper (extraction)
 
 ### Frontend
 - **Framework:** React 18
@@ -304,7 +313,39 @@ cp .env.example .env
 npm run build
 ```
 
-#### 5. Start the Application
+#### 5. Database Management Scripts
+
+LabManager includes utilities for database export, import, and maintenance:
+
+**Export Database (with all files):**
+```bash
+cd backend
+npm run db:export
+# Creates: exports/lab-manager-backup-YYYY-MM-DD.zip
+```
+
+**Import Database:**
+```bash
+cd backend
+npm run db:import -- path/to/backup.zip
+# Imports all tables and restores files
+```
+
+**Cleanup Orphaned Records:**
+```bash
+cd backend
+npm run db:cleanup-orphaned-images
+# Removes equipment_images records with missing files
+```
+
+**Legacy SQL Export:**
+```bash
+cd backend
+npm run db:export-sql
+# Creates SQL dump for manual restoration
+```
+
+#### 6. Start the Application
 
 LabManager provides cross-platform startup scripts in the `scripts/` folder.
 
@@ -653,10 +694,10 @@ JWT_EXPIRES_IN=7d
 
 # CORS Configuration
 # Option 1: Specific domain (recommended for security)
-CORS_ORIGIN=https://mydomain.com
+CORS_ORIGIN=https://yourdomain.com
 
 # Option 2: Multiple domains (comma-separated, if needed)
-# CORS_ORIGIN=https://mydomain.com,https://www.mydomain.com
+# CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
 
 # Option 3: Allow all origins (NOT recommended for production)
 # CORS_ORIGIN=*
@@ -764,14 +805,105 @@ sudo apt install -y nginx
 sudo nano /etc/nginx/sites-available/labmanager
 ```
 
-**Nginx configuration for `mydomain.com`:**
+**Step 1: Temporary HTTP-only configuration (for obtaining SSL certificate):**
+
+```nginx
+# Temporary HTTP-only configuration
+server {
+    listen 80;
+    listen [::]:80;
+    server_name yourdomain.com;  # Replace with your actual domain
+
+    # Let's Encrypt verification
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    # Proxy to Node.js backend temporarily
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /uploads/ {
+        alias /var/www/labmanager/backend/uploads/;
+    }
+}
+```
+
+**Important:** Replace `yourdomain.com` with your actual domain.
+
+**Prepare and test this configuration:**
+
+```bash
+# Create certbot directory
+sudo mkdir -p /var/www/certbot
+
+# Test Nginx configuration
+sudo nginx -t
+
+# If test passes, reload Nginx
+sudo systemctl reload nginx
+```
+
+**Enable the site:**
+
+```bash
+# Create symbolic link (if not already done)
+sudo ln -s /etc/nginx/sites-available/labmanager /etc/nginx/sites-enabled/
+
+# Test Nginx configuration
+sudo nginx -t
+
+# Reload Nginx
+sudo systemctl reload nginx
+```
+
+#### 9. Obtain SSL/TLS Certificate with Let's Encrypt
+
+```bash
+# Install Certbot (if not already installed)
+sudo apt install -y certbot python3-certbot-nginx
+
+# Obtain certificate (replace yourdomain.com with your actual domain)
+sudo certbot --nginx -d yourdomain.com
+
+# For www subdomain support (optional):
+# sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+
+# Test automatic renewal
+sudo certbot renew --dry-run
+```
+
+**Important Notes:**
+- Replace `yourdomain.com` with your actual domain
+- Follow the Certbot prompts to enter your email and agree to terms
+- Choose whether to redirect HTTP to HTTPS (recommended: Yes)
+- Certbot will automatically obtain and configure SSL certificates
+
+#### 10. Update to Full HTTPS Configuration
+
+After obtaining the SSL certificate, update your Nginx configuration:
+
+```bash
+sudo nano /etc/nginx/sites-available/labmanager
+```
+
+**Step 2: Full production configuration with HTTPS redirect:**
 
 ```nginx
 # Redirect HTTP to HTTPS
 server {
     listen 80;
     listen [::]:80;
-    server_name mydomain.com www.mydomain.com;
+    server_name yourdomain.com;  # Replace with your actual domain
 
     # Let's Encrypt verification
     location /.well-known/acme-challenge/ {
@@ -788,11 +920,11 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name mydomain.com www.mydomain.com;
+    server_name yourdomain.com;  # Replace with your actual domain
 
-    # SSL Configuration (update paths after obtaining certificates)
-    ssl_certificate /etc/letsencrypt/live/mydomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/mydomain.com/privkey.pem;
+    # SSL Configuration
+    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
 
     # SSL Security Settings
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -806,10 +938,10 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
 
-    # Max upload size (adjust as needed)
+    # Max upload size
     client_max_body_size 10M;
 
-    # Proxy to Node.js backend (serves both API and frontend)
+    # Proxy to Node.js backend
     location / {
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
@@ -822,7 +954,7 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # Optional: Serve uploads directly via Nginx (better performance)
+    # Serve uploads directly
     location /uploads/ {
         alias /var/www/labmanager/backend/uploads/;
         expires 30d;
@@ -835,38 +967,40 @@ server {
 }
 ```
 
-**Enable the site:**
+**Important:** Replace all instances of `yourdomain.com` with your actual domain.
+
+**Test and reload Nginx:**
 
 ```bash
-# Create symbolic link
-sudo ln -s /etc/nginx/sites-available/labmanager /etc/nginx/sites-enabled/
-
-# Test Nginx configuration
+# Test configuration
 sudo nginx -t
 
 # Reload Nginx
 sudo systemctl reload nginx
 ```
 
-#### 9. Obtain SSL/TLS Certificate with Let's Encrypt
+**Update backend CORS configuration:**
 
 ```bash
-# Install Certbot
-sudo apt install -y certbot python3-certbot-nginx
-
-# Obtain certificate (replace with your domain)
-sudo certbot --nginx -d mydomain.com -d www.mydomain.com
-
-# Test automatic renewal
-sudo certbot renew --dry-run
+sudo nano /var/www/labmanager/backend/.env
 ```
 
-**Certbot will automatically:**
-- Obtain SSL certificates
-- Update Nginx configuration
-- Set up automatic renewal
+Update CORS_ORIGIN:
+```env
+CORS_ORIGIN=https://yourdomain.com
+```
 
-#### 10. Configure Firewall
+Restart the application:
+```bash
+pm2 restart labmanager
+```
+
+**Verify deployment:**
+- Visit `https://yourdomain.com` - should work with HTTPS
+- Visit `http://yourdomain.com` - should redirect to HTTPS
+- Check for SSL padlock in browser
+
+#### 11. Configure Firewall
 
 ```bash
 # Allow SSH, HTTP, and HTTPS
@@ -880,11 +1014,11 @@ sudo ufw enable
 sudo ufw status
 ```
 
-#### 11. Post-Deployment Verification
+#### 12. Post-Deployment Verification
 
 **Test the deployment:**
 
-1. **Access your site:** `https://mydomain.com`
+1. **Access your site:** `https://yourdomain.com`
 2. **Login with default credentials:**
    - Email: `admin@lab.com`
    - Password: `admin123`
@@ -920,7 +1054,7 @@ PORT=80          # For HTTP (requires sudo/root)
 PORT=443         # For HTTPS (requires SSL certificates in Node.js)
 
 # Update CORS_ORIGIN
-CORS_ORIGIN=https://mydomain.com
+CORS_ORIGIN=https://yourdomain.com
 
 # Run with PM2 as root (for ports < 1024)
 sudo pm2 start dist/server.js --name "labmanager"
@@ -945,7 +1079,7 @@ sudo pm2 start dist/server.js --name "labmanager"
 
 #### Production
 - `NODE_ENV=production`
-- `CORS_ORIGIN=https://mydomain.com`
+- `CORS_ORIGIN=https://yourdomain.com`
 - Optimized builds
 - Error logging to files
 - PM2 process management
@@ -954,7 +1088,20 @@ sudo pm2 start dist/server.js --name "labmanager"
 
 ### Backup Strategy
 
-**Database backups:**
+**Built-in Export Utility (Recommended):**
+
+```bash
+# Use the built-in export for complete backups
+cd /var/www/labmanager/backend
+npm run db:export
+
+# Copy to backup location
+cp exports/lab-manager-backup-*.zip /var/backups/labmanager/
+```
+
+This creates a complete portable backup including all database tables and uploaded files in a single ZIP archive.
+
+**Manual Backup Script (Alternative):**
 
 ```bash
 # Create backup script
@@ -1011,7 +1158,38 @@ systemctl status postgresql
 
 **Database Export and Import:**
 
-For migrating data between systems or creating backups in portable JSON format, see the [Database Export/Import Guide](backend/EXPORT-IMPORT-GUIDE.md).
+LabManager includes built-in export/import utilities for complete system migration:
+
+```bash
+# Export everything (database + files)
+cd backend
+npm run db:export
+# Creates: exports/lab-manager-backup-YYYY-MM-DD.zip
+
+# Import on another server
+npm run db:import -- exports/lab-manager-backup-YYYY-MM-DD.zip
+```
+
+**What's Included in Export:**
+- Complete database (users, equipment, bookings, documents, maintenance, settings, etc.)
+- Equipment images and specifications
+- Document files (PDFs, Excel, Word, etc.)
+- Site settings and configurations
+- Equipment and document categories
+
+**Export Format:**
+```
+lab-manager-backup-YYYY-MM-DD.zip
+├── manifest.json              # Export metadata
+├── database/
+│   └── data.json             # All database tables
+└── files/
+    ├── uploads/              # Equipment images
+    └── uploads/documents/    # Document files
+```
+
+**Legacy Format Support:**
+The import utility automatically detects and supports legacy JSON-only exports for backward compatibility.
 
 **Update the application:**
 
@@ -1104,6 +1282,28 @@ pm2 restart labmanager
 - Clear browser localStorage and cookies
 - Try incognito/private browsing mode
 - Verify password was changed successfully in database
+
+**Export/Import Issues:**
+
+**Export creates JSON instead of ZIP:**
+- Ensure `archiver` dependency is installed: `npm install`
+- Check for errors in export output
+- Verify Node.js version is 18+
+
+**Import fails with "unsupported format":**
+- Verify file extension is `.zip` or `.json`
+- Check file is not corrupted: `unzip -t backup.zip`
+- Ensure you're using the correct import command
+
+**Files not restored after import:**
+- Check `backend/uploads/` directory permissions: `chmod 755 uploads`
+- Verify ZIP contains `files/` directory: `unzip -l backup.zip`
+- Check disk space: `df -h`
+- Review import logs for file restoration errors
+
+**Orphaned image records after migration:**
+- Run cleanup utility: `npm run db:cleanup-orphaned-images`
+- This removes database records for missing files
 
 ---
 
@@ -1289,6 +1489,8 @@ First official release of the Laboratory Equipment Management System.
 - Customizable site branding
 - JWT authentication and role-based access control
 - Input validation and file upload security
+- **Enhanced database export/import** - Complete ZIP backups with all files ✨ NEW
+- **Database maintenance utilities** - Cleanup scripts for orphaned data ✨ NEW
 - Comprehensive deployment documentation for production servers
 
 ---
