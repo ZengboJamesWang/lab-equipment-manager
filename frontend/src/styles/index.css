@@ -292,3 +292,20 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* Responsive Navigation */
+@media (max-width: 1024px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
